@@ -11,10 +11,10 @@ LOG = create_logger(app)
 
 
 local_domain = "0.0.0.0"
-local_port = 8080
+local_port = 10301
 
 remote_proto = 'http'
-remote_domain = '127.0.0.1'
+remote_domain = 'acs.masmovil.com'
 remote_port = 10301  # 10302 for https
 
 

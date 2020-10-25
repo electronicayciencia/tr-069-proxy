@@ -13,7 +13,7 @@
 </ParameterValueStruct>
 <ParameterValueStruct>
     <Name>Device.Services.X_MM_RemoteAccess.TrustedDomain.1.IPAddress</Name>
-    <Value xsi:type="xsd:string">31.221.202.0</Value>
+    <Value xsi:type="xsd:string">46.222.160.0</Value>
 </ParameterValueStruct>
 <ParameterValueStruct>
     <Name>Device.Services.X_MM_RemoteAccess.TrustedDomain.1.PrefixLength</Name>
