@@ -1,18 +1,21 @@
 from flask import Flask, make_response, request
 from flask.logging import create_logger
+import logging
 import requests
 import json
 import re
 
 app = Flask(__name__)
+logging.basicConfig(filename='app.log', level=logging.DEBUG)
 LOG = create_logger(app)
+
 
 local_domain = "0.0.0.0"
 local_port = 8080
 
 remote_proto = 'http'
-remote_domain = 'acs.masmovil.com'
-remote_port = 10301 # 10302 for https
+remote_domain = '127.0.0.1'
+remote_port = 10301  # 10302 for https
 
 
 ALL_METHODS = ["GET", "POST"]
@@ -98,7 +101,7 @@ def alter_response(t):
     newtext = load_file("injectiondata.xml")
     newtext2 = "cwmp:ParameterValueStruct[7]"
     if anchor in t and anchor2 in t:
-        LOG.info("Response altered")
+        LOG.warning("Response altered")
         new = t.replace(anchor, newtext)
         new = new.replace(anchor2, newtext2)
         return new
@@ -119,8 +122,8 @@ def show_params(t):
         return
 
     for n, v in re.findall("<Name>([^<]+).*?<Value[^>]*>([^<]+)", t, re.DOTALL):
-        LOG.info("{} {}: {}".format(d, n, v))
+        LOG.debug("{} {}: {}".format(d, n, v))
 
 
 if __name__ == "__main__":
-    app.run(host=local_domain, port=local_port, debug=True)
+    app.run(host=local_domain, port=local_port, debug=False)
