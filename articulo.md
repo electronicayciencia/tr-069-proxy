@@ -1,10 +1,10 @@
 # Obteniendo la *PLOAM password* de un router F@ST 5657 <!-- omit in toc -->
 
-Lo que te voy a contar **no es una vulnerabilidad**, ni tampoco un fallo de seguridad del operador. Las acciones descritas tan sólo afectan a tu propio router.
+Lo que te voy a contar **no es una vulnerabilidad**, ni tampoco un fallo de seguridad del operador. Las acciones descritas sólo afectan a tu propio router.
 
-Se trata, sencillamente, de aprovechar la administración remota.
+Sin embargo, es un modo de acercarse a un problema y trazar un plan con las opciones disponibles para obtener el resultado deseado. Resultado que sí, se aparta del diseño original del sistema. 
 
-Pero también podemos verlo como un modo de acercarse a un problema y trazar un plan con las opciones disponibles, para obtener el resultado deseado. Resultado que se aparta del diseño original del sistema. Es, dicho de otra manera, un relato sobre **hacking**.
+Es, dicho de otra manera, un relato sobre **hacking**.
 
 - [Redes de fibra](#redes-de-fibra)
 - [Aproximaciones fallidas](#aproximaciones-fallidas)
@@ -17,27 +17,27 @@ Pero también podemos verlo como un modo de acercarse a un problema y trazar un 
 
 La semana pasada me instalaron "la fibra".
 
-Han pasado diez años desde el comienzo en Telefónica de un proyecto llamado FTTH (Fiber To The Home). Consistía en sustituir por fibra óptica el par trenzado de la *última milla*. Sonaba a ciencia ficción por entonces. La fibra estaba reservada a los troncales y redes de enlace especiales. Lo más próximo era ONO, y el bucle de abonado seguía haciéndolo con coaxial.
+Han pasado diez años desde el comienzo en Telefónica de un proyecto llamado FTTH (Fiber To The Home). Consistía en sustituir por fibra óptica el par trenzado de la *última milla*. Sonaba a ciencia ficción por entonces. La fibra estaba reservada a los troncales y redes de enlace especiales. Lo más próximo era ONO, y el bucle de abonado seguía haciéndolo en coaxial.
 
-Al grano, no conozco la redes de fibra. Nunca he trabajando con ellas. Pero parece ser que, a diferencia de las redes de ADSL, para establecer la comunicación con la central se necesita una contraseña de acceso.
+Al grano, no conozco las redes de fibra. Nunca he trabajando con ellas. Pero parece ser que, a diferencia de las redes de ADSL, se necesita una contraseña de acceso para establecer la comunicación con la central. Esa contraseña he visto que la llaman **clave GPON**, pero mi router la llama *PLOAM Password* y así voy a llamarla yo.
 
 ![Pestaña de configuración de la PLOAM Password](img/ploam_password_input.png)
 
-Lo primero que hace el instalador tras encender el router es introducir la contraseña. A propósito, si le preguntas por ella quizá te la revele, pero le estás poniendo en un compromiso. Porque con toda seguridad le han ordenado que no lo haga.
+Lo **primero** que hace el instalador tras encender el router es introducir la contraseña. A propósito, si le preguntas por ella amablemente quizá te la revele, pero no tiene ninguna obligación de ello. De hecho con toda seguridad le han ordenado que no lo haga.
 
-Esa contraseña la necesitarás si piensas sustituir el router del operador por uno tuyo. Pero también si se te estropea el actual o sufre algún problema. Sin contraseña no hay conexión, y sin conexión no hay administración remota. Solo queda enviar un técnico a domicilio a reparar la avería.
+Esa contraseña la necesitarás si piensas sustituir el router del operador por uno tuyo. Pero también si se te estropea el actual o sufre algún problema. Sin contraseña no hay conexión, y sin conexión no hay administración remota. Podrían dártela por teléfono pero quizá el operador no sepa cómo obtenerla. Solo queda enviar un técnico **a domicilio** a reparar la avería.
 
 Quedémonos con que hay un dato desconocido, y vamos a intentar obtenerlo.
 
 ## Aproximaciones fallidas
 
-Lo primero es buscar en internet si alguien lo ha hecho antes, por supuesto. Algunos modelos anteriores tenían descuidos evidentes.
+Antes de nada buscamos en internet si alguien lo ha hecho antes, por supuesto. Algunas versiones anteriores del firmware tenían descuidos evidentes.
 
-El modelo 5655v2, según parece, tenía la [password en la interfaz web][1]. Es un fallo común en formularios web hechos con prisas o sin conocer los componentes. Inaceptable.
+El modelo 5655v2, según parece, tenía la [password en la interfaz web][1]. Es un fallo común fruto de las prisas o inexperiencia con el framework. **Inaceptable**.
 
-Un firmware más reciente del mismo modelo corrige ese fallo y ya no puede obtenerse la contraseña desde la interfaz web. Debe hacerse entrando con una shell al sistema y leyendo el fichero de configuración. Viene deshabilitada, no obstante, pero puede habilitarse mediante [opciones indocumentadas][2] en la web.
+Un firmware más reciente del mismo modelo corrige ese fallo y ya no puede obtenerse la contraseña desde la interfaz web. Debe hacerse entrando con una **shell** al dispositivo y leyendo el fichero de configuración. Viene deshabilitada, no obstante, pero puede habilitarse mediante [opciones indocumentadas][2] en la web.
 
-Pero en mi modelo, el F@ST 5657, tampoco funciona ya este último método. Habrá que echarle imaginación.
+En mi modelo, el F@ST 5657, tampoco funciona ya este último método. Habrá que echarle imaginación.
 
 Miramos los **puertos abiertos**. Quién sabe, tal vez la administración por telnet o por SSH está activada de serie. Si bien sería extraño que esté activada pero en la web no aparezcan opciones para desactivarla.
 
@@ -57,9 +57,9 @@ Miramos los **puertos abiertos**. Quién sabe, tal vez la administración por te
     49153/tcp open  upnp        Portable SDK for UPnP devices 1.6.18 (Linux 4.1.51-5.02L.05; UPnP 1.0)
     Service Info: OS: Linux; CPE: cpe:/o:linux:linux_kernel:4.1.51-5.02l.05
 
-No parece. El DNS (80), la web de administración (80), la web por https (443), compartir ficheros (139 y 445), el teléfono (5060) y el uPnP (49153). Quizá alguno de los servicios tenga exploits conocidos. Pero vamos a seguir mirando.
+El **DNS** (53), la **web** de administración (80), la web por https (443), compartir ficheros (139 y 445), el **teléfono** (5060) y el **uPnP** (49153). Quizá alguno de los servicios tenga exploits conocidos. De momento nada de telnet. Vamos a seguir mirando.
 
-**Descarga de la configuración**. Vamos a lo fácil. Hago un backup de la configuración por si puedo ver la contraseña directamente. O tal vez podría manipular el backup para activar el telnet o el SSH cuando lo cargue.
+**Descarga de la configuración**. Probemos lo más fácil. Hago un backup de la configuración por si puedo ver la contraseña ahí directamente. O si no podría manipular el backup para activar el telnet o el SSH cuando lo cargue.
 
 ![img-aead10](img/aead10.png)
 
@@ -67,21 +67,21 @@ No es texto, es un fichero binario. Quizá comprimido, cifrado o las dos cosas. 
 
 ## El CWMP, más conocido por TR-069
 
-CWMP son las siglas de *CPE WAN Management Protocol* y CPE, a su vez, las de *Customer Premises Equipment*. En español también se le llama EDC: Equipo en Domicilio del Cliente.
+CWMP son las siglas de *CPE WAN Management Protocol* y CPE, a su vez, las de *Customer Premises Equipment*. En español también se le llama EDC, **Equipo en Domicilio del Cliente**.
 
-Son equipos propiedad de la compañía suministradora pero que están en tu casa. Como *tu router*. Esta advertencia es importante: por regla general, el router es de la compañía, no tuyo. Está cedido como el contador de telegestión de la luz o del gas. Manipular *tu router* sin autorización puede tener consecuencias, por ejemplo que el operador no se haga cargo si sufres una avería y te cobre la revisión.
+Son equipos propiedad de la compañía suministradora pero que están en tu casa. Como *tu router*. Esta advertencia es importante: por regla general, el router es de la compañía, no tuyo. Te lo cede como el contador de telegestión de la luz o del gas. Manipular *tu router* sin autorización puede tener consecuencias, por ejemplo que el operador no se haga cargo si sufres una avería y te cobre por la revisión.
 
-Ahora pongámonos un instante en la piel de un técnico de soporte. Cuando tienes una red con decenas de miles equipos deslocalizados en casa del cliente te interesa tenerlos lo más controlados posible, configurarlos desde el mismo punto y recibir información periódica sobre su estado y la conexión. Marca, modelo, número de serie, versión del firmware, atenuación, parámetros de sincronización y hasta la temperatura.
+Ahora pongámonos un instante en la piel de un técnico de soporte. Cuando tienes una red con decenas de miles equipos deslocalizados en casa del cliente te interesa tenerlos lo más controlados posible, configurarlos **desde un punto centralizado** y recibir información periódica sobre su estado y la conexión. Marca, modelo, número de serie, versión del firmware, atenuación, parámetros de sincronización y hasta la temperatura.
 
-Hay un cacharro llamado ACS (*Auto Configuration Server*) al que se conecta el router nada más enchufarlo a la fibra o el ADSL. Este le proporciona los parámetros necesarios. Entre otras cosas, le cambia la contraseña de administrador y al cliente le deja un usuario más o menos restringido. ¿Te suena?
+Hay un cacharro llamado **ACS** (*Auto Configuration Server*) al que se conecta el router nada más enchufarlo a la fibra o el ADSL. Este le proporciona los parámetros necesarios. Entre otras cosas, le cambia la **contraseña** de administrador y al cliente le deja un usuario más o menos restringido. ¿Te suena?
 
-En parte para que el sobrino del cliente no toque donde no sabe, se quede sin conexión y te llame culpándote de ello.
+En parte para que el sobrino del cliente no toque donde no sabe, se quede sin conexión y te llame a ti culpándote de ello.
 
-Tras esta primera vez, el CPE se conecta al ACS periódicamente para informar de algunos parámetros. Eso se llama Technical Report (TR), de ahi TR-069.
+Tras esta primera vez, el CPE se conecta al ACS periódicamente para informar de algunos parámetros. Eso se llama *Technical Report* (TR), de ahi TR-069.
 
-El ACS sirve también para hacer diagnóstico remoto de las incidencias. Si un cliente te llama diciendo que no tiene internet, puedes confirmarlo rápidamente mirando en el sistema su último estado: qué router tiene, hace cuanto que se lo pusieron, si está on-line o cuándo fue su último informe periódico.
+El ACS sirve también para hacer **diagnóstico** remoto de las incidencias. Si un cliente te llama diciendo que no tiene internet, puedes confirmarlo rápidamente mirando en el sistema su último estado: qué router tiene, hace cuanto que se lo pusieron, si está on-line o cuándo fue su último informe periódico.
 
-Por si fuera poco, tienes la posibilidad de enviar comandos para reiniciárselo remotamente, subir y bajar ficheros, actualizar el firmware, o conectarte al equipo para abrirle puertos o lo que necesite.
+Por si fuera poco, tienes la posibilidad de **enviar comandos** para reiniciárselo remotamente, subir y bajar ficheros, actualizar el firmware, o conectarte al equipo para abrirle puertos o lo que necesite.
 
 ¿Verdad que suena bien?
 
@@ -91,7 +91,7 @@ Dado que las opciones del TR-069 no aparecen entrando con el usuario 1234, ni se
 
 ![Con el usuario 1234 no aparece la opción](img/no_TR_as_1234.png)
 
-La forma más fácil para ganar admin en tu propio router es reiniciarlo a valores de fábrica. La *PLOAM Password* se debería conservar en un espacio protegido. Sin embargo, existe la posibilidad de que se borre. Te quedarías sin Internet y toca llamar. Tenlo en cuenta.
+La forma más fácil para ganar admin en tu propio router es **reiniciarlo** a valores de fábrica. La *PLOAM Password* se debería conservar en un espacio protegido. Sin embargo, existe la posibilidad de que se borre. Te quedarías sin Internet y toca llamar. Tenlo en cuenta.
 
 Este router se reinicia presionando el botón de reset durante unos 20 segundos. El procedimiento está descrito en tutoriales para modelos similares.
 
@@ -99,11 +99,9 @@ Una vez reiniciado y, por supuesto, desconectado de la red ya podemos entrar com
 
 ![opciones del cliente TR-069](img/TR_as_admin.png)
 
-La URL del ACS y el usuario se ven a simple vista. La contraseña ya la veremos después. Créeme.
+La URL del ACS y el usuario se ven a simple vista. La contraseña no la necesitamos. La PLOAM Password no te la va a mostrar ni siquiera como admin.
 
-La PLOAM Password no te la va a mostrar ni siquiera como admin.
-
-En esa pantalla, aprovechamos para desactivar el cliente. Así no se cambiará la contraseña. Haremos también un backup de la configuración. Así cuando queramos recuperar el usuario administrador más adelante ya no necesitamos reiniciar a valores de fábrica, será suficiente cargar esta configuración.
+En esa pantalla, aprovechamos para **desactivar** el cliente. Así no se cambiará la contraseña. Haremos también un backup de la configuración. Así cuando queramos recuperar el usuario administrador más adelante ya no necesitamos reiniciar a valores de fábrica, será suficiente cargar esta configuración.
 
 ## MitM al CWMP TR-069
 
@@ -111,13 +109,13 @@ En esa pantalla, aprovechamos para desactivar el cliente. Así no se cambiará l
 
 ![acs unauthorized](img/acs_unauthorized.png)
 
-Pero aún teniendo el usuario y contraseña no conocemos el protocolo. Puedes mirar [la especificación][3], es pública. Vas a ver que es SOAP y varios comandos, pero no vas a sacar nada en claro.
+Pero aún teniendo el usuario y contraseña no conocemos el protocolo. Puedes mirar [la especificación][3], es pública. Vas a ver que es **SOAP** y varios comandos, pero no vas a sacar nada en claro.
 
 Lo que sí resultaría útil es escuchar la comunicación entre el router y el ACS. ¿Pero cómo hacemos eso?
 
-¿Con Wireshark? No, la comunicación sale por la interfaz de fibra, no la vas a ver. Además es HTTPs, irá cifrada.
-¿Con Burpsuite? No, el router no nos deja configurar un proxy.
-¿Con Burpsuite en modo proxy transparente? No, el DNS y la tabla de rutas se lo proporciona el operador y no podemos cambiarlo. Un ARP spoofing o rogue DHCP no van a colar.
+¿Con **Wireshark**? No, la comunicación sale por la interfaz de fibra, no la vas a ver. Además es HTTPs, irá cifrada.
+¿Con **Burpsuite**? No, el router no nos deja configurar un proxy.
+¿Con **Burpsuite** en modo proxy **transparente**? No, el DNS y la tabla de rutas se lo proporciona el operador y no podemos cambiarlo. Un ARP spoofing o rogue DHCP no van a colar.
 
 Si pudiera cambiar la URL para apuntar a un servidor ACS mío, tal vez pudiera extraer información útil.
 
@@ -142,9 +140,9 @@ Y activo el cliente. A ver si llega la petición...
     <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
     ...
 
-¡Sí! Pero ¿cómo sé qué responder?
+¡Sí! ¿Y ahora, cómo sé qué responder?
 
-Hay un ACS opensource: [Genie ACS][4]. Pero la gracia está en averiguar los parámetros que le ponen remotamente, no en ponerle los que yo quiera.
+Hay un ACS opensource: [Genie ACS][4]. Pero la gracia está en averiguar los parámetros que le ponen **remotamente**, no en ponerle yo los que yo quiera.
 
 Necesito:
 
@@ -154,13 +152,13 @@ Necesito:
 - registrarla a un fichero
 - reenviar la respuesta al router
 
-Necesito un proxy, pero que haga reenvío de una petición a otra URL. Habrá herramientas por ahí, pero en 30 minutos no dí con una apropiada. Así que retomé un script python similar de otro proyecto y lo modifiqué: [app.py][app.py].
+Necesito un proxy transparente, vaya, pero que haga reenvío de una petición a otra URL distinta. Habrá herramientas por ahí, pero en 30 minutos no dí con una apropiada. Así que retomé un **script python** similar de otro proyecto y lo modifiqué: [app.py][app.py].
 
-¿Cómo es la conversación con el ACS? Se parece a este diagrama:
+La conversación con el ACS se parece a este diagrama:
 
 ![Ejemplo de comunicación CWMP](img/cwmp_example.png)
 
-Lo primero que envía el router es marca, modelo y número de serie, así como el estado en que se encuentra. Para que que el ACS sepa qué valores enviar. En este caso es bootstrap (la primera conexión) así que el ACS enviará todo lo necesario.
+El router inicia la conexión. Envía marca, modelo y número de serie, así como el estado en que se encuentra. Para que que el ACS sepa qué valores enviar. En este caso es **bootstrap** (la primera conexión) así que el ACS enviará todo lo necesario.
 
 ```xml
 <SOAP-ENV:Body>
@@ -179,7 +177,7 @@ Lo primero que envía el router es marca, modelo y número de serie, así como e
         </Event>
 ```
 
-El router envía información sobre su firmware, IP y la URL para conexión remota desde el ACS.
+Más adelante envía información sobre su firmware, IP y la URL para conexión remota desde el ACS.
 
 ```xml
 <ParameterValueStruct>
@@ -196,15 +194,13 @@ El router envía información sobre su firmware, IP y la URL para conexión remo
 </ParameterValueStruct>
 ```
 
-La URL de conexión contiene una cadena aleatoria generada por el CPE. Si no se conoce esta cadena, no se puede conectar remotamente.
-
-Por cierto, ¿la forma de enumerar los parámetros tipo `Device.DeviceInfo.SoftwareVersion` no te recuerda un poco a SNMP?
+La URL de conexión contiene una cadena **aleatoria** generada por el CPE. Si no se conoce esta cadena, no se puede conectar remotamente.
 
 Ahora el ACS le solicita los parámetros disponibles en el equipo y su tipo para adaptar la configuración y enviársela.
 
-El router envía información sobre básicamente todo. Wifis configuradas, equipos conectados, asignaciones DHCP de la red interna, VPN, procesos en ejecución... un volcado completo.
+En este punto el equipo envía información sobre **básicamente todo**. Wifis configuradas, equipos conectados, asignaciones DHCP de la red interna, nombres de host, configuración WiFi, VPN, procesos en ejecución... un volcado completo.
 
-Tras esto el ACS le envía todos los parámetros que en equipo no tiene. Por ejemplo, fija la contraseña para la conexión remota:
+A continuación el ACS le envía todos los parámetros que el equipo no tiene. Por ejemplo, la contraseña para la conexión remota:
 
 ```xml
 <cwmp:SetParameterValues>
@@ -222,7 +218,7 @@ Tras esto el ACS le envía todos los parámetros que en equipo no tiene. Por eje
 </cwmp:SetParameterValues>
 ```
 
-Ignoro si la contraseña es siempre la misma para un cliente o la misma para todos. Pero no supone un riesgo cuando el nombre de usuario va en relación al número de serie y la URL se genera de manera aleatoria. Si quisieras atacar un router ajeno usando este método necesitarías:
+Ignoro si la contraseña es siempre la misma para un cliente o la misma para todos. En todo caso, el **riesgo** es menor cuando el nombre de usuario depende del número de serie y la URL se genera de manera aleatoria. Si quisieras atacar un router ajeno usando este método necesitarías:
 
 - Contraseña: pongamos que es genérica, la tienes
 - ID numérico del fabricante del router: podrías averiguarlo
@@ -230,7 +226,7 @@ Ignoro si la contraseña es siempre la misma para un cliente o la misma para tod
 - Número de serie del dispositivo: no lo sabes
 - URL: es aleatoria, no la sabes
 
-También, por supuesto, fija la contraseña del usuario administrador. La apuntamos.
+También, por supuesto, fija la contraseña del usuario **administrador**. La apuntamos. Nos será útil después.
 
 ```xml
 <cwmp:SetParameterValues>
@@ -244,15 +240,15 @@ También, por supuesto, fija la contraseña del usuario administrador. La apunta
 </cwmp:SetParameterValues>
 ```
 
-También están los datos de la conexión SIP y otros que ahora mismo no nos resultan relevantes.
+También están los datos de la **conexión SIP** y otros que ahora mismo no nos resultan relevantes. Aunque si quisíeramos cambiar el router los necesitaríamos también. 
 
 De la *PLOAM Password* ni rastro. Tiene sentido: si puedes conectar a ACS y por tanto a la red, la password es correcta. ¿Para qué te va a enviar otra?
 
-¿Ahora qué hacemos?
+¿Cómo seguimos?
 
 ## Habilitar administración por SSH
 
-El router hace un volcado completo de la configuración, con todos los parámetros que soporta. Se me ocurre buscar entre los parámetros a ver si alguno me da una pista sobre cómo seguir.
+El router hace un volcado completo de la configuración, con todos los parámetros que soporta. Se me ocurre **buscar** entre los parámetros a ver si alguno me da una pista sobre cómo seguir.
 
 Buscamos por ejemplo `telnet`. Encuentro esto:
 
@@ -275,11 +271,11 @@ Buscamos por ejemplo `telnet`. Encuentro esto:
 </ParameterInfoStruct>
 ```
 
-Parecen parámetros para activar distintos modos de acceso remoto. Y son *writable*. Voy a buscar en Google el parámetro X_MM_RemoteAccess.
+Parecen parámetros para activar distintos modos de acceso remoto. Y son *writable*. Voy a buscar en Google el parámetro **X_MM_RemoteAccess**.
 
 ![La búsqueda en google sólo encuentra un resultado](img/x_mm_remoteaccess.png)
 
-¿Un sólo resultado? Qué desconcertante. Habría esperado un modelo de datos XML al menos, o un PDF describiendo la función. Pero el estándar CWMP 
+¿Un sólo resultado? Desconcertante. Habría esperado un modelo de datos XML al menos, o un PDF describiendo la función. Pero cada fabricante hace su implementación particular del estándar CWMP.
 
 Cuando el equipo informa al ACS de los valores de dichos parámetros vemos que sólo están activas las interfaces web http y https:
 
@@ -302,7 +298,7 @@ Cuando el equipo informa al ACS de los valores de dichos parámetros vemos que s
 </ParameterValueStruct>
 ```
 
-Como tengo interceptadas las comunicaciones con el Servidor de Configuración, modifico la respuesta para activar estos parámetros y ponerlos a `true`. Los valores a inyectar están en el fichero [injectiondata.xml][injectiondata.xml].
+Como tengo interceptadas las comunicaciones con el Servidor de Configuración, **modifico** la respuesta para activar estos parámetros y ponerlos a `true`. Los valores a inyectar están en el fichero [injectiondata.xml][injectiondata.xml].
 
 Desde dentro de la red no veo más puertos abiertos. Es lógico, si son puertos de administración remota, estarán abiertos hacia afuera.
 
@@ -317,9 +313,9 @@ Me conecto utilizando la conexión wifi compartida del móvil y... ¡sí! El 22 
     Connection closed by foreign host.
     $
 
-Vaya... algo no le gusta. Me ha abierto los puertos, pero me está cerrando la conexión. ¿El firewall? Sigamos buscando.
+Sin embargo algo no le gusta. Me ha abierto los puertos, pero a continuación **me echa**. ¿El firewall? Probablemente. Sigamos buscando.
 
-Justo debajo de los parámetros anteriores hay otro que nos da una pista para seguir:
+Justo debajo de los parámetros anteriores encontramos una pista para seguir:
 
 ```xml
 <ParameterValueStruct>
@@ -338,7 +334,7 @@ Justo debajo de los parámetros anteriores hay otro que nos da una pista para se
 
 Por lo visto el panel de control, aunque activo, no está accesible para cualquiera. Piensa que si pones un panel de administración en el puerto 80 abierto a internet, es cuestión de tiempo que alguien pruebe la combinación 1234/1234. Con lo que un extraño tendría el mismo control sobre el dispositivo que tienes tú. Por eso se establece ese `TrustedDomain`.
 
-Miro la IP con que sale mi conexión 4G, la añado a los parámetros que inyectábamos antes y...
+Miro la IP con que sale mi **conexión 4G**, la añado a los parámetros de antes y...
 
     $ telnet 188.127.xx.xx
     Trying 188.127.xx.xx...
@@ -347,7 +343,7 @@ Miro la IP con que sale mi conexión 4G, la añado a los parámetros que inyect�
 
     home login:
 
-¡Sí!. Tenemos shell. Probamos con el usuario admin y la contraseña que vimos antes en el log del proxy:
+¡Sí!. Tenemos shell. Probamos con el usuario admin y la contraseña que nos habíamos **apuntado**:
 
     home login: admin 
     Password: <vista en el log>
@@ -357,7 +353,7 @@ Miro la IP con que sale mi conexión 4G, la añado a los parámetros que inyect�
 
     admin@home:/tmp$ 
 
-¡Bien! ¿Nos podemos hacer root? Probamos con root/root:
+¡Bien! ¿Nos podemos hacer root? Probamos con **root/root**:
 
     admin@home:/tmp$ su -
     Password: <root>
@@ -367,9 +363,9 @@ Miro la IP con que sale mi conexión 4G, la añado a los parámetros que inyect�
 
     root@home:~# 
 
-Ahora, con shell de administrador ya podemos volcar la configuración que queramos. Bien de un fichero, o bien de la memoria de un proceso si no estuviera en un fichero.
+Con shell de administrador ya podemos volcar la configuración que queramos. Bien de un **fichero**, o bien de la **memoria** de un proceso si no estuviera en un fichero.
 
-Pero está:
+Pero sí está:
 
     root@home:/opt/filesystem1/data# ls
     lastrandom        optical_conf.txt
@@ -377,9 +373,9 @@ Pero está:
     375a5xxxxxxxxxxxxx
     root@home:/opt/filesystem1/data# 
 
-Son caracteres hexadecimales. Evidentemente el router la necesita en claro, para poder enviarla. No puedes sustituirla por un hash, por ejemplo. Podría cifrarse para hacerlo más complicado, pero ¿por qué ocultarle un parámetro de configuración al usuario root?
+Son caracteres **hexadecimales**. Evidentemente el router la necesita en claro, para poder enviarla. No puedes sustituirla por un hash, por ejemplo. Podría cifrarse para hacerlo más complicado, pero ¿por qué ocultarle un parámetro de configuración al usuario root?
 
-Esta clave está también en el fichero de configuración `/opt/filesystem1/conf/backup-cfg.xml`, pero aquí se llama *RegId*
+La misma **clave** está también en el fichero de configuración `/opt/filesystem1/conf/backup-cfg.xml`, pero aquí se llama *RegId*
 
 ```xml
 <Optical>
@@ -407,9 +403,9 @@ Esta clave está también en el fichero de configuración `/opt/filesystem1/conf
 </Optical>
 ```
 
-¿Para qué quiero la clave? ¡Para nada! Ese no es el objetivo. 
+¿Para qué quiero la clave? **¡Para nada!** Ese no es el objetivo.
 
-Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas, aprendiendo por el camino cómo se hace la administración remota.
+Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas, aprendiendo por el camino cómo funciona la administración remota.
 
 
 
@@ -431,5 +427,5 @@ Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas,
 
 [4]: https://genieacs.com/
 
-[app.py]: app.py
-[injectiondata.xml]: injectiondata.xml
+[app.py]: https://github.com/electronicayciencia/tr-069-proxy/blob/main/app.py
+[injectiondata.xml]: https://github.com/electronicayciencia/tr-069-proxy/blob/main/injectiondata.xml
