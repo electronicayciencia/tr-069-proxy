@@ -408,7 +408,7 @@ Esta clave está también en el fichero de configuración `/opt/filesystem1/conf
 
 ¿Para qué quiero la clave? ¡Para nada! Ese no es el objetivo. 
 
-Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas.
+Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas, aprendiendo por el camino cómo se hace la administración remota.
 
 
 

@@ -1,3 +1,3 @@
-# tr-069-proxy
+# MitM proxy for CWMP
 
-Nothing to see here yet.
+Read about this project (in spanish) here: [artículo](articulo.md)
