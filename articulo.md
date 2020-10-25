@@ -226,7 +226,7 @@ Ignoro si la contraseña es siempre la misma para un cliente o la misma para tod
 - Número de serie del dispositivo: no lo sabes
 - URL: es aleatoria, no la sabes
 
-También, por supuesto, fija la contraseña del usuario **administrador**. La apuntamos. Nos será útil después.
+También, por supuesto, fija la contraseña del usuario **administrador** a `16225227` La apuntamos. Nos será útil más adelante.
 
 ```xml
 <cwmp:SetParameterValues>
@@ -271,11 +271,11 @@ Buscamos por ejemplo `telnet`. Encuentro esto:
 </ParameterInfoStruct>
 ```
 
-Parecen parámetros para activar distintos modos de acceso remoto. Y son *writable*. Voy a buscar en Google el parámetro **X_MM_RemoteAccess**.
+*HTTPEnable*, *HTTPSEnable*, *TELNETEnable* y *SSHEnable* parecen parámetros para activar distintos modos de acceso remoto. Y son *writable*. Voy a buscar en Google qué es la rama **X_MM_RemoteAccess**.
 
 ![La búsqueda en google sólo encuentra un resultado](img/x_mm_remoteaccess.png)
 
-¿Un sólo resultado? Desconcertante. Habría esperado un modelo de datos XML al menos, o un PDF describiendo la función. Pero cada fabricante hace su implementación particular del estándar CWMP.
+**¿Un sólo resultado?** ¿En serio? Desconcertante... Habría esperado un PDF describiendo con la especificación, o al menos un modelo de datos XML. Pero cada fabricante hace su implementación particular del estándar CWMP.
 
 Cuando el equipo informa al ACS de los valores de dichos parámetros vemos que sólo están activas las interfaces web http y https:
 
@@ -300,7 +300,7 @@ Cuando el equipo informa al ACS de los valores de dichos parámetros vemos que s
 
 Como tengo interceptadas las comunicaciones con el Servidor de Configuración, **modifico** la respuesta para activar estos parámetros y ponerlos a `true`. Los valores a inyectar están en el fichero [injectiondata.xml][injectiondata.xml].
 
-Desde dentro de la red no veo más puertos abiertos. Es lógico, si son puertos de administración remota, estarán abiertos hacia afuera.
+Desde dentro de la red no veo más puertos abiertos. Es lógico, si son puertos de administración remota, estarán abiertos **hacia afuera**.
 
 Huelga decir que esta prueba sólo la puedo hacer porque estoy por fuera del **CG-NAT**. Si estuviera tras el CG-NAT, tendría una IP externa privada, una 100.x.x.x seguramente y no podría llegar a ella desde una máquina en Internet.
 
@@ -343,7 +343,7 @@ Miro la IP con que sale mi **conexión 4G**, la añado a los parámetros de ante
 
     home login:
 
-¡Sí!. Tenemos shell. Probamos con el usuario admin y la contraseña que nos habíamos **apuntado**:
+¡Sí, tenemos shell! Probamos con el usuario admin y la contraseña que nos habíamos **apuntado**:
 
     home login: admin 
     Password: <vista en el log>
