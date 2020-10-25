@@ -1,10 +1,10 @@
 # Obteniendo la *PLOAM password* de un router F@ST 5657 <!-- omit in toc -->
 
-Lo que te voy a contar no es una vulnerabilidad, ni tampoco un fallo de seguridad del operador. Las acciones descritas tan sólo afectan a tu propio router.
+Lo que te voy a contar **no es una vulnerabilidad**, ni tampoco un fallo de seguridad del operador. Las acciones descritas tan sólo afectan a tu propio router.
 
 Se trata, sencillamente, de aprovechar la administración remota.
 
-Pero -visto de otra forma- también es un modo de acercarse a un problema y trazar un plan con las opciones disponibles, para obtener el resultado deseado. Resultado que se aparta del diseño original del sistema. Es, dicho de otra manera, un relato sobre **hacking**.
+Pero también podemos verlo como un modo de acercarse a un problema y trazar un plan con las opciones disponibles, para obtener el resultado deseado. Resultado que se aparta del diseño original del sistema. Es, dicho de otra manera, un relato sobre **hacking**.
 
 - [Redes de fibra](#redes-de-fibra)
 - [Aproximaciones fallidas](#aproximaciones-fallidas)
@@ -59,9 +59,9 @@ Miramos los **puertos abiertos**. Quién sabe, tal vez la administración por te
 
 No parece. El DNS (80), la web de administración (80), la web por https (443), compartir ficheros (139 y 445), el teléfono (5060) y el uPnP (49153). Quizá alguno de los servicios tenga exploits conocidos. Pero vamos a seguir mirando.
 
-**Descarga de la configuración**. Vamos a lo fácil. Hago un backup de la configuración por puedo ver la contraseña directamente. O tal vez podría manipular el backup para activar una shell cuando lo cargue.
+**Descarga de la configuración**. Vamos a lo fácil. Hago un backup de la configuración por si puedo ver la contraseña directamente. O tal vez podría manipular el backup para activar el telnet o el SSH cuando lo cargue.
 
-![img-aead10][img/aead10.png]
+![img-aead10](img/aead10.png)
 
 No es texto, es un fichero binario. Quizá comprimido, cifrado o las dos cosas. AEAD me recuerda a *authenticated encryption with associated data*, prefiero buscar otro camino.
 
@@ -279,7 +279,7 @@ Parecen parámetros para activar distintos modos de acceso remoto. Y son *writab
 
 ![La búsqueda en google sólo encuentra un resultado](img/x_mm_remoteaccess.png)
 
-¿Un sólo resultado? Vaya... qué desconcertante. Habría esperado un modelo de datos XML al menos, o un PDF describiendo la función. Pero el estándar CWMP 
+¿Un sólo resultado? Qué desconcertante. Habría esperado un modelo de datos XML al menos, o un PDF describiendo la función. Pero el estándar CWMP 
 
 Cuando el equipo informa al ACS de los valores de dichos parámetros vemos que sólo están activas las interfaces web http y https:
 
@@ -315,6 +315,7 @@ Me conecto utilizando la conexión wifi compartida del móvil y... ¡sí! El 22 
     Connected to 188.127.xx.xx.
     Escape character is '^]'.
     Connection closed by foreign host.
+    $
 
 Vaya... algo no le gusta. Me ha abierto los puertos, pero me está cerrando la conexión. ¿El firewall? Sigamos buscando.
 
@@ -335,7 +336,7 @@ Justo debajo de los parámetros anteriores hay otro que nos da una pista para se
 </ParameterValueStruct>
 ```
 
-Por lo visto el panel de control, aunque activo, no está accesible para cualquiera. Piensa que si pones un panel de administración en el puerto 80 abierto a internet, es cualquier de tiempo que alguien pruebe la combinación 1234/1234. Con lo que un extraño tendría el mismo control sobre el dispositivo que tienes tú. Por eso se establece ese `TrustedDomain`.
+Por lo visto el panel de control, aunque activo, no está accesible para cualquiera. Piensa que si pones un panel de administración en el puerto 80 abierto a internet, es cuestión de tiempo que alguien pruebe la combinación 1234/1234. Con lo que un extraño tendría el mismo control sobre el dispositivo que tienes tú. Por eso se establece ese `TrustedDomain`.
 
 Miro la IP con que sale mi conexión 4G, la añado a los parámetros que inyectábamos antes y...
 
