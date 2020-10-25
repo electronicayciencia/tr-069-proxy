@@ -1,8 +1,16 @@
-# Obteniendo la *PLOAM password* de un router F@ST 5657
+# Obteniendo la *PLOAM password* de un router F@ST 5657 <!-- omit in toc -->
 
-Lo que te voy a contar no es una vulnerabilidad, ni tampoco un fallo de seguridad del operador. No sirve para comprometer routers ni pone en peligro ninguna infraestructura.
+Lo que te voy a contar no es una vulnerabilidad, ni tampoco un fallo de seguridad del operador. Las acciones descritas tan sólo afectan a tu propio router.
 
-Es una forma de acercarse a un problema y trazar un plan con las opciones disponibles, para obtener el resultado deseado. Resultado que se aparta del diseño original del sistema. Es, dicho de otra manera, un relato sobre **hacking**.
+Se trata, sencillamente, de aprovechar la administración remota.
+
+Pero -visto de otra forma- también es un modo de acercarse a un problema y trazar un plan con las opciones disponibles, para obtener el resultado deseado. Resultado que se aparta del diseño original del sistema. Es, dicho de otra manera, un relato sobre **hacking**.
+
+- [Redes de fibra](#redes-de-fibra)
+- [Aproximaciones fallidas](#aproximaciones-fallidas)
+- [El CWMP, más conocido por TR-069](#el-cwmp-más-conocido-por-tr-069)
+- [Ganar admin](#ganar-admin)
+- [MitM al CWMP TR-069](#mitm-al-cwmp-tr-069)
 
 ## Redes de fibra
 
@@ -58,31 +66,99 @@ No es texto, es un fichero binario. Quizá comprimido, cifrado o las dos cosas. 
 
 ## El CWMP, más conocido por TR-069
 
-CWMP son las siglas de *CPE WAN Management Protocol* y CPE, a su vez, las de *Customer Premises Equipment*. Igual te suena más por EDC: Equipo en Domicilio del Cliente.
+CWMP son las siglas de *CPE WAN Management Protocol* y CPE, a su vez, las de *Customer Premises Equipment*. En español también se le llama EDC: Equipo en Domicilio del Cliente.
 
-Son equipos propiedad de la compañía suministradora pero que están en tu casa. Como tu router.
+Son equipos propiedad de la compañía suministradora pero que están en tu casa. Como *tu router*. Esta advertencia es importante: por regla general, el router es de la compañía, no tuyo. Está cedido como el contador de telegestión de la luz o del gas. Manipular *tu router* sin autorización puede tener consecuencias, por ejemplo que el operador no se haga cargo si sufres una avería y te cobre la revisión.
 
-Cuando tienes una red con decenas de miles equipos deslocalizados en casa del cliente te interesa tenerlos lo más controlados posible, configurarlos desde el mismo punto y recibir información periódica sobre su estado y la conexión. Marca, modelo, número de serie, versión del firmware, atenuación, parámetros de sincronización y hasta la temperatura.
+Ahora pongámonos un instante en la piel de un técnico de soporte. Cuando tienes una red con decenas de miles equipos deslocalizados en casa del cliente te interesa tenerlos lo más controlados posible, configurarlos desde el mismo punto y recibir información periódica sobre su estado y la conexión. Marca, modelo, número de serie, versión del firmware, atenuación, parámetros de sincronización y hasta la temperatura.
 
-Hay un cacharro que se llama ACS (*Auto Configuration Server*) al que se conecta el router nada más enchufarlo a la fibra o el ADSL. Este le sirve la configuración necesaria. Entre otras cosas, le cambia la contraseña de administrador y a ti te deja un usuario más o menos restringido. ¿Te suena?
+Hay un cacharro llamado ACS (*Auto Configuration Server*) al que se conecta el router nada más enchufarlo a la fibra o el ADSL. Este le proporciona los parámetros necesarios. Entre otras cosas, le cambia la contraseña de administrador y al cliente le deja un usuario más o menos restringido. ¿Te suena?
 
-En parte para que el cliente no toque donde no sabe, se quede sin conexión y te llame culpándote de ello.
+En parte para que el sobrino del cliente no toque donde no sabe, se quede sin conexión y te llame culpándote de ello.
 
-El ACS te sirve para hacer diagnóstico remoto de las incidencias. Si un cliente te llama diciendo que no tiene internet, puedes confirmarlo rápidamente mirando en el sistema su último estado: qué router tiene, hace cuanto que se lo pusieron, si está on-line o cuándo fue su último informe periódico.
+Tras esta primera vez, el CPE se conecta al ACS periódicamente para informar de algunos parámetros. Eso se llama Technical Report (TR), de ahi TR-069.
 
-También puedes reiniciárselo remotamente, subir y bajar ficheros, o actualizar el firmware.
+El ACS sirve también para hacer diagnóstico remoto de las incidencias. Si un cliente te llama diciendo que no tiene internet, puedes confirmarlo rápidamente mirando en el sistema su último estado: qué router tiene, hace cuanto que se lo pusieron, si está on-line o cuándo fue su último informe periódico.
 
-¿Y, a nosotros, nos puede servir para algo?
+Por si fuera poco, tienes la posibilidad de enviar comandos para reiniciárselo remotamente, subir y bajar ficheros, actualizar el firmware, o conectarte al equipo para abrirle puertos o lo que necesite.
+
+¿Verdad que suena bien?
 
 ## Ganar admin
 
-Lo primero es ser usuario administrador del router. Ya que desde el usuario 1234 las opciones del TR-069 no aparecen.
+Dado que las opciones del TR-069 no aparecen entrando con el usuario 1234, ni se pueden ver llamando al backend de la web directamente, para continuar la historia necesitamos entrar como administrador.
 
 ![Con el usuario 1234 no aparece la opción](img/no_TR_as_1234.png)
 
-Tampoco se puede modificar ni ver llamando a métodos de la web.
+La forma más fácil para ganar admin en tu propio router es reiniciarlo a valores de fábrica. La *PLOAM Password* se debería conservar en un espacio protegido. Sin embargo, existe la posibilidad de que se borre. Te quedarías sin Internet y toca llamar. Tenlo en cuenta.
 
-La forma más fácil para ganar admin en estos routers es reiniciar a valores de fábrica. La PLOAM Password se debería conservar en un espacio aparte. Sin embargo, existe la posibilidad de en el proceso se borre. Con lo que te quedarías sin Internet y toca llamar.
+Este router se reinicia presionando el botón de reset durante unos 20 segundos. El procedimiento está descrito en tutoriales para modelos similares.
+
+Una vez reiniciado y, por supuesto, desconectado de la red ya podemos entrar como *admin* y ver las opciones del cliente TR-069.
+
+![opciones del cliente TR-069](img/TR_as_admin.png)
+
+La URL del ACS y el usuario se ven a simple vista. La contraseña ya la veremos después. Créeme.
+
+La PLOAM Password no te la va a mostrar ni siquiera como admin.
+
+En esa pantalla, aprovechamos para desactivar el cliente. Así no se cambiará la contraseña. Haremos también un backup de la configuración. Así cuando queramos recuperar el usuario administrador más adelante ya no necesitamos reiniciar a valores de fábrica, será suficiente cargar esta configuración.
+
+## MitM al CWMP TR-069
+
+¿Te has fijado en la URL del ACS? Es HTTPS. O sea una web. ¿Y si nos conectamos qué tiene?
+
+![acs unauthorized](img/acs_unauthorized.png)
+
+Pero aún teniendo el usuario y contraseña no conocemos el protocolo. Puedes mirar [la especificación][3], es pública. Vas a ver que es SOAP y varios comandos, pero no vas a sacar nada en claro.
+
+Lo que sí resultaría útil es escuchar la comunicación entre el router y el ACS. ¿Pero cómo hacemos eso?
+
+¿Con Wireshark? No, la comunicación sale por la interfaz de fibra, no la vas a ver. Además es HTTPs, irá cifrada.
+¿Con Burpsuite? No, el router no nos deja configurar un proxy.
+¿Con Burpsuite en modo proxy transparente? No, el DNS y la tabla de rutas se lo proporciona el operador y no podemos cambiarlo. Un ARP spoofing o rogue DHCP no van a colar.
+
+Si pudiera cambiar la URL para apuntar a un servidor ACS mío, tal vez pudiera extraer información útil.
+
+Cambio la URL a la IP de un servidor local:
+
+![url cambiada a un servidor local](img/acs_url_raspberry.png)
+
+Y activo el cliente. A ver si llega la petición...
+
+    pi@raspberrypi:~$ netcat -lvp 10302
+    Listening on [0.0.0.0] (family 0, port 10302)
+    Connection from [192.168.1.1] port 10302 [tcp/*] accepted (family 2, sport 53720)
+    POST /OLT********/11/ HTTP/1.1
+    Host: 192.168.1.121:10302
+    User-Agent: gSOAP/2.7
+    Content-Type: text/xml; charset=utf-8
+    Content-Length: 2280
+    Connection: keep-alive
+    SOAPAction:
+
+    <?xml version="1.0" encoding="UTF-8"?>
+    <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/" xmlns:SOAP-ENC="http://schemas.xmlsoap.org/soap/encoding/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:cwmp="urn:dslforum-org:cwmp-1-0">
+    ...
+
+¡Sí! Pero ¿cómo sé qué responder?
+
+Hay un ACS opensource: [Genie ACS][4]. Pero la gracia está en averiguar los parámetros que le ponen remotamente, no en ponerle los que yo quiera.
+
+Necesito:
+
+- recibir la petición en la URL local, es un POST.
+- registrarla a un fichero
+- enviar esa petición tal cual a la URL legítima y obtener una respuesta
+- registrarla a un fichero
+- reenviar la respuesta al router
+
+Necesito un proxy, pero que haga reenvío de una petición a otra URL. Habrá herramientas por ahí, pero en 30 minutos no dí con una apropiada. Así que retomé un script python similar de otro proyecto y lo modifiqué: [app.py][app.py].
+
+
+
+
+
 
 
 
@@ -96,6 +172,8 @@ La forma más fácil para ganar admin en estos routers es reiniciar a valores de
 
 [2]: https://naseros.com/2020/07/14/como-extraer-clave-gpon-y-sip-del-sagemcom-fast-5655v2-de-masmovil-pepephone-y-yoigo/
 
+[3]: https://www.broadband-forum.org/technical/download/TR-069.pdf
 
+[4]: https://genieacs.com/
 
-
+[app.py]: app.py
