@@ -308,11 +308,11 @@ Buscamos por ejemplo `telnet`. Encuentro esto:
 </ParameterInfoStruct>
 ```
 
-*HTTPEnable*, *HTTPSEnable*, *TELNETEnable* y *SSHEnable* parecen parámetros para activar distintos modos de acceso remoto. Y son *writable*. Voy a buscar en Google qué es la rama **X_MM_RemoteAccess**.
+*HTTPEnable*, *HTTPSEnable*, *TELNETEnable* y *SSHEnable* parecen parámetros para activar distintos modos de acceso remoto. Y son *writable*. Voy a **buscar en Google** qué es la rama X_MM_RemoteAccess.
 
 ![La búsqueda en google sólo encuentra un resultado](img/x_mm_remoteaccess.png)
 
-**¿Un sólo resultado?** ¿En serio? Desconcertante... Habría esperado un PDF describiendo con la especificación, o al menos un modelo de datos XML. Pero cada fabricante hace su implementación particular del estándar CWMP.
+**¿Un sólo resultado?** ¿En serio? Desconcertante... Habría esperado un PDF con la especificación, o al menos un modelo de datos XML. Pero cada fabricante hace su implementación particular del estándar CWMP.
 
 Cuando el equipo informa al ACS de los valores de dichos parámetros vemos que sólo están activas las interfaces web http y https:
 
