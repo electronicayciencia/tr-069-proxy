@@ -12,6 +12,7 @@ Es, dicho de otra manera, un relato sobre **hacking**.
 - [Ganar admin](#ganar-admin)
 - [MitM al CWMP TR-069](#mitm-al-cwmp-tr-069)
 - [Habilitar administración por SSH](#habilitar-administración-por-ssh)
+- [Leer la contraseña](#leer-la-contraseña)
 - [Referencias](#referencias)
 
 ## Redes de fibra
@@ -386,6 +387,8 @@ Miro la IP con que sale mi **conexión 4G**, la añado a los parámetros de ante
     Escape character is '^]'.
 
     home login:
+
+## Leer la contraseña
 
 ¡Sí, tenemos shell! Probamos con el usuario admin y la contraseña que nos habíamos **apuntado**:
 
