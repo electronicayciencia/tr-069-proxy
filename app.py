@@ -84,7 +84,7 @@ def hello(path):
                 response.status_code,
                 response_headers)
 
-        except FileNotFoundError as e:
+        except Exception as e:
             LOG.error("Exception: {}".format(e))
             report.write("Exception: {}\n".format(e))
             return make_response("Not found", 404)

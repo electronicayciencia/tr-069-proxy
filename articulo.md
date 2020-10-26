@@ -149,7 +149,7 @@ Y activo el cliente. A ver si llega la petición...
 
 ¡Sí! ¿Y ahora, cómo sé qué responder?
 
-Hay un ACS opensource: [Genie ACS][4]. Pero la gracia está en averiguar los parámetros que le ponen **remotamente**, no en ponerle yo los que yo quiera.
+Hay un ACS Open Source: [Genie ACS][4]. Pero la gracia está en averiguar los parámetros que le ponen **remotamente**, no en ponerle yo los que yo quiera.
 
 Necesito:
 
@@ -161,7 +161,7 @@ Necesito:
 
 Necesito un proxy transparente, vaya, pero que haga reenvío de una petición a otra **URL distinta**. Que además registre todo y me permita hace modificación al vuelo de las respuestas. Habrá herramientas por ahí, seguro, pero yo no las conozco y en 30 minutos no dí con una apropiada. Así que retomé un **script python** similar de otro proyecto y lo modifiqué: [app.py][app.py].
 
-La conversación con el ACS es como se muestra en este diagrama:
+La conversación con el ACS es como se muestra en este diagrama (extraído de la especificación):
 
 ![Ejemplo de comunicación CWMP](img/cwmp_example.png)
 
@@ -350,7 +350,6 @@ Me conecto utilizando la conexión wifi compartida del móvil y... ¡sí! El 22 
     Connected to 188.127.xx.xx.
     Escape character is '^]'.
     Connection closed by foreign host.
-    $
 
 Sin embargo algo no le gusta. Me ha abierto los puertos, pero a continuación **me echa**. ¿El firewall? Probablemente. Sigamos buscando.
 
@@ -379,7 +378,7 @@ Esa opción viene ya prevista en la interfaz web:
 
 Es curioso que aún con usuario admin no nos muestre las opciones para habilitar o deshabilitar el panel de control remoto. Creo que en otros modelos sí se muestran al menos para HTTP y HTTPs.
 
-Miro la IP con que sale mi **conexión 4G**, la añado a los parámetros de antes y...
+Pruebo a poner 0.0.0.0/0, pero no funciona. Miro la IP con que sale mi **conexión 4G**, la añado a los parámetros de antes con un rango /24 y...
 
     $ telnet 188.127.xx.xx
     Trying 188.127.xx.xx...
@@ -393,7 +392,7 @@ Miro la IP con que sale mi **conexión 4G**, la añado a los parámetros de ante
 ¡Sí, tenemos shell! Probamos con el usuario admin y la contraseña que nos habíamos **apuntado**:
 
     home login: admin 
-    Password: <vista en el log>
+    Password: <vista en la comunicación con el ACS>
 
     BusyBox v1.22.1 (2020-04-20 07:57:05 CEST) built-in shell (ash)
     Enter 'help' for a list of built-in commands.
@@ -425,6 +424,7 @@ Son caracteres **hexadecimales**. Evidentemente el router la necesita en claro, 
 La misma **clave** está también en el fichero de configuración `/opt/filesystem1/conf/backup-cfg.xml`, pero aquí se llama *RegId*
 
 ```xml
+...
 <Optical>
     <Interfaces element-count="1" new-id="2">
         <Interface uid="1">
@@ -448,6 +448,7 @@ La misma **clave** está también en el fichero de configuración `/opt/filesyst
         <IgnoreDsPbitGemMapping>true</IgnoreDsPbitGemMapping>
     </G988>
 </Optical>
+...
 ```
 
 ¿Para qué quiero la clave? **¡Para nada!** Ese no es el objetivo.
@@ -462,8 +463,7 @@ Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas,
 
 [GenieACS: a fast, lightweight TR-069 ACS][4]
 
-
-
+[CPE WAN Management Protocol (CWMP)- upv.es][6]
 
 
 
@@ -479,6 +479,8 @@ Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas,
 [4]: https://genieacs.com/
 
 [5]: https://cwmp-data-models.broadband-forum.org/
+
+[6]: https://riunet.upv.es/bitstream/handle/10251/107006/HOPKINS%20-%20CPE%20WAN%20Management%20Protocol%20(CWMP).pdf?sequence=1&isAllowed=y
 
 [app.py]: https://github.com/electronicayciencia/tr-069-proxy/blob/main/app.py
 
