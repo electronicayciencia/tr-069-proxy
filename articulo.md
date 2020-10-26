@@ -2,7 +2,7 @@
 
 Lo que te voy a contar **no es una vulnerabilidad**, ni tampoco un fallo de seguridad del operador. Las acciones descritas sólo afectan a tu propio router.
 
-Sin embargo, es un modo de acercarse a un problema y trazar un plan con las opciones disponibles para obtener el resultado deseado. Resultado que sí, se aparta del diseño original del sistema. 
+Sin embargo, es un modo de acercarse a un problema y trazar un plan con las opciones disponibles para obtener el resultado deseado. Resultado que sí, se aparta del diseño original del sistema.
 
 Es, dicho de otra manera, un relato sobre **hacking**.
 
@@ -65,6 +65,9 @@ El **DNS** (53), la **web** de administración (80), la web por https (443), com
 
 No es texto, es un fichero binario. Quizá comprimido, cifrado o las dos cosas. AEAD me recuerda a *authenticated encryption with associated data*, prefiero buscar otro camino.
 
+Si no puedo obtener una shell por red, tal vez tenga que utilizar una conexión serie. Pero implicaría desmontar un router nuevo y manipular el hardware. Podría salir mal.
+
+
 ## El CWMP, más conocido por TR-069
 
 CWMP son las siglas de *CPE WAN Management Protocol* y CPE, a su vez, las de *Customer Premises Equipment*. En español también se le llama EDC, **Equipo en Domicilio del Cliente**.
@@ -114,12 +117,14 @@ Pero aún teniendo el usuario y contraseña no conocemos el protocolo. Puedes mi
 Lo que sí resultaría útil es escuchar la comunicación entre el router y el ACS. ¿Pero cómo hacemos eso?
 
 ¿Con **Wireshark**? No, la comunicación sale por la interfaz de fibra, no la vas a ver. Además es HTTPs, irá cifrada.
+
 ¿Con **Burpsuite**? No, el router no nos deja configurar un proxy.
+
 ¿Con **Burpsuite** en modo proxy **transparente**? No, el DNS y la tabla de rutas se lo proporciona el operador y no podemos cambiarlo. Un ARP spoofing o rogue DHCP no van a colar.
 
 Si pudiera cambiar la URL para apuntar a un servidor ACS mío, tal vez pudiera extraer información útil.
 
-Cambio la URL a la IP de un servidor local:
+Cambio la URL a la IP de un servidor local, donde he dejado escuchando un netcat.
 
 ![url cambiada a un servidor local](img/acs_url_raspberry.png)
 
@@ -152,13 +157,13 @@ Necesito:
 - registrarla a un fichero
 - reenviar la respuesta al router
 
-Necesito un proxy transparente, vaya, pero que haga reenvío de una petición a otra URL distinta. Habrá herramientas por ahí, pero en 30 minutos no dí con una apropiada. Así que retomé un **script python** similar de otro proyecto y lo modifiqué: [app.py][app.py].
+Necesito un proxy transparente, vaya, pero que haga reenvío de una petición a otra **URL distinta**. Que además registre todo y me permita hace modificación al vuelo de las respuestas. Habrá herramientas por ahí, seguro, pero yo no las conozco y en 30 minutos no dí con una apropiada. Así que retomé un **script python** similar de otro proyecto y lo modifiqué: [app.py][app.py].
 
-La conversación con el ACS se parece a este diagrama:
+La conversación con el ACS es como se muestra en este diagrama:
 
 ![Ejemplo de comunicación CWMP](img/cwmp_example.png)
 
-El router inicia la conexión. Envía marca, modelo y número de serie, así como el estado en que se encuentra. Para que que el ACS sepa qué valores enviar. En este caso es **bootstrap** (la primera conexión) así que el ACS enviará todo lo necesario.
+El router inicia la conexión. Envía marca, modelo y número de serie, así como el estado de configuración en que se encuentra. Para que que el ACS sepa qué valores enviar. En este caso es **bootstrap** (la primera conexión) así que el ACS enviará todo.
 
 ```xml
 <SOAP-ENV:Body>
@@ -198,7 +203,7 @@ La URL de conexión contiene una cadena **aleatoria** generada por el CPE. Si no
 
 Ahora el ACS le solicita los parámetros disponibles en el equipo y su tipo para adaptar la configuración y enviársela.
 
-En este punto el equipo envía información sobre **básicamente todo**. Wifis configuradas, equipos conectados, asignaciones DHCP de la red interna, nombres de host, configuración WiFi, VPN, procesos en ejecución... un volcado completo.
+En este punto el equipo envía información sobre **básicamente todo**. Wifis configuradas (incluyendo SSID y password en claro), equipos conectados, asignaciones DHCP de la red interna, nombres de host, VPN, procesos en ejecución... un volcado completo.
 
 A continuación el ACS le envía todos los parámetros que el equipo no tiene. Por ejemplo, la contraseña para la conexión remota:
 
@@ -218,7 +223,7 @@ A continuación el ACS le envía todos los parámetros que el equipo no tiene. P
 </cwmp:SetParameterValues>
 ```
 
-Ignoro si la contraseña es siempre la misma para un cliente o la misma para todos. En todo caso, el **riesgo** es menor cuando el nombre de usuario depende del número de serie y la URL se genera de manera aleatoria. Si quisieras atacar un router ajeno usando este método necesitarías:
+Ignoro si la contraseña es siempre la misma para un cliente o la misma para todos. En cualquier caso, el **riesgo** es menor cuando el nombre de usuario depende del número de serie y la URL se genera de manera aleatoria. Si quisieras atacar un router ajeno usando este método necesitarías:
 
 - Contraseña: pongamos que es genérica, la tienes
 - ID numérico del fabricante del router: podrías averiguarlo
@@ -226,7 +231,7 @@ Ignoro si la contraseña es siempre la misma para un cliente o la misma para tod
 - Número de serie del dispositivo: no lo sabes
 - URL: es aleatoria, no la sabes
 
-También, por supuesto, fija la contraseña del usuario **administrador** a `16225227` La apuntamos. Nos será útil más adelante.
+También, por supuesto, fija la contraseña del usuario **administrador** a `16225227`. En cada intento ha sido diferente. Por lo que cada router queda con una contraseña de administración aleatoria. La apuntamos. Nos será útil más adelante.
 
 ```xml
 <cwmp:SetParameterValues>
@@ -240,9 +245,41 @@ También, por supuesto, fija la contraseña del usuario **administrador** a `162
 </cwmp:SetParameterValues>
 ```
 
-También están los datos de la **conexión SIP** y otros que ahora mismo no nos resultan relevantes. Aunque si quisíeramos cambiar el router los necesitaríamos también. 
+El operador nos configura remotamente varios parámetros. Pueden ser diferentes según el modelo de router, compañía, red, etc. Os dejo aquí una lista aproximada.
 
-De la *PLOAM Password* ni rastro. Tiene sentido: si puedes conectar a ACS y por tanto a la red, la password es correcta. ¿Para qué te va a enviar otra?
+Configuración para el auto-diagnóstico, diagnóstico remoto e informes periódicos.
+
+    Device.IP.Diagnostics.IPPing.DataBlockSize: 64
+    Device.IP.Diagnostics.IPPing.DiagnosticsState: Requested
+    Device.IP.Diagnostics.IPPing.DSCP: 0
+    Device.IP.Diagnostics.IPPing.Host: 22.30.425.202
+    Device.IP.Diagnostics.IPPing.NumberOfRepetitions: 4
+    Device.IP.Diagnostics.IPPing.Timeout: 4000
+    Device.ManagementServer.ConnectionRequestPassword: 3bxxxxx
+    Device.ManagementServer.ConnectionRequestUsername: 44Axxx-N720xxxxxxxxxx
+    Device.ManagementServer.PeriodicInformInterval: 60
+    Device.ManagementServer.PeriodicInformInterval: 7200
+
+Configuración de VoIP. Servidor SIP, usuario/password, plan de numeración, etc.
+
+    Device.Services.VoiceService.1.VoiceProfile.1.DigitMap: (00xxxxx.T|0[1-9]xx.T|069|1xxx.T|112|118xx|116xxx|22x.T|50xxx.T|51xxxxxxx|590xxxxxxxxxx|[6-9]xxxxxxxx|*xx#|*xx*xxxx.#|*#xx#|#xx#|067xxxx.T|2373|622T|x.T)
+    Device.Services.VoiceService.1.VoiceProfile.1.Enable: Enabled
+    Device.Services.VoiceService.1.VoiceProfile.1.Line.1.Enable: Enabled
+    Device.Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.AuthPassword: null
+    Device.Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.AuthUserName: null@null
+    Device.Services.VoiceService.1.VoiceProfile.1.Line.1.SIP.URI: null
+    Device.Services.VoiceService.1.VoiceProfile.1.SIP.OutboundProxy: null
+    Device.Services.VoiceService.1.VoiceProfile.1.SIP.OutboundProxyPort: 5060
+    Device.Services.VoiceService.1.VoiceProfile.1.SIP.ProxyServer: null
+    Device.Services.VoiceService.1.VoiceProfile.1.SIP.RegistrarServer: null
+    Device.Services.VoiceService.1.VoiceProfile.1.SIP.UserAgentDomain: null
+
+Desactivar IPv6 y cambiar la contraseña del administrador local a una aleatoria:
+
+    Device.IP.IPv6Enable: 0
+    Device.Users.User.4.Password: 32922222
+
+De la *PLOAM Password* **ni rastro**. Tiene sentido: si puedes conectar a ACS y por tanto a la red, la password es correcta. ¿Para qué te va a enviar otra?
 
 ¿Cómo seguimos?
 
@@ -334,6 +371,11 @@ Justo debajo de los parámetros anteriores encontramos una pista para seguir:
 
 Por lo visto el panel de control, aunque activo, no está accesible para cualquiera. Piensa que si pones un panel de administración en el puerto 80 abierto a internet, es cuestión de tiempo que alguien pruebe la combinación 1234/1234. Con lo que un extraño tendría el mismo control sobre el dispositivo que tienes tú. Por eso se establece ese `TrustedDomain`.
 
+Esa opción viene ya prevista en la interfaz web:
+![captura de pantalla remote access](img/remote_access_screen.png)
+
+Es curioso que aún con usuario admin no nos muestre las opciones para habilitar o deshabilitar el panel de control remoto. Creo que en otros modelos sí se muestran al menos para HTTP y HTTPs.
+
 Miro la IP con que sale mi **conexión 4G**, la añado a los parámetros de antes y...
 
     $ telnet 188.127.xx.xx
@@ -363,7 +405,7 @@ Miro la IP con que sale mi **conexión 4G**, la añado a los parámetros de ante
 
     root@home:~# 
 
-Con shell de administrador ya podemos volcar la configuración que queramos. Bien de un **fichero**, o bien de la **memoria** de un proceso si no estuviera en un fichero.
+Con shell de root ya podemos volcar la configuración que queramos. Bien de un **fichero**, o bien de la **memoria** de un proceso si no estuviera en un fichero.
 
 Pero sí está:
 
@@ -428,4 +470,5 @@ Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas,
 [4]: https://genieacs.com/
 
 [app.py]: https://github.com/electronicayciencia/tr-069-proxy/blob/main/app.py
+
 [injectiondata.xml]: https://github.com/electronicayciencia/tr-069-proxy/blob/main/injectiondata.xml
