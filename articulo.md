@@ -2,7 +2,7 @@
 
 Lo que te voy a contar **no es una vulnerabilidad**, ni tampoco un fallo de seguridad del operador. Las acciones descritas sólo afectan a tu propio router.
 
-Sin embargo, es un modo de acercarse a un problema y trazar un plan con las opciones disponibles para obtener el resultado deseado. Resultado que sí, se aparta del diseño original del sistema.
+Sin embargo, es un modo de acercarse a un problema y trazar un plan con las opciones disponibles para obtener el resultado deseado. Resultado que -es cierto- se aparta del diseño original del sistema.
 
 Es, dicho de otra manera, un relato sobre **hacking**.
 
@@ -372,6 +372,7 @@ Justo debajo de los parámetros anteriores encontramos una pista para seguir:
 Por lo visto el panel de control, aunque activo, no está accesible para cualquiera. Piensa que si pones un panel de administración en el puerto 80 abierto a internet, es cuestión de tiempo que alguien pruebe la combinación 1234/1234. Con lo que un extraño tendría el mismo control sobre el dispositivo que tienes tú. Por eso se establece ese `TrustedDomain`.
 
 Esa opción viene ya prevista en la interfaz web:
+
 ![captura de pantalla remote access](img/remote_access_screen.png)
 
 Es curioso que aún con usuario admin no nos muestre las opciones para habilitar o deshabilitar el panel de control remoto. Creo que en otros modelos sí se muestran al menos para HTTP y HTTPs.
