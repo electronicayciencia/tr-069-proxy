@@ -12,6 +12,7 @@ Es, dicho de otra manera, un relato sobre **hacking**.
 - [Ganar admin](#ganar-admin)
 - [MitM al CWMP TR-069](#mitm-al-cwmp-tr-069)
 - [Habilitar administración por SSH](#habilitar-administración-por-ssh)
+- [Referencias](#referencias)
 
 ## Redes de fibra
 
@@ -450,9 +451,13 @@ La misma **clave** está también en el fichero de configuración `/opt/filesyst
 
 Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas, aprendiendo por el camino cómo funciona la administración remota.
 
+## Referencias
 
+[Especificación TR-069 en PDF][3]
 
+[Modelos de datos CWMP][5]
 
+[GenieACS: a fast, lightweight TR-069 ACS][4]
 
 
 
@@ -469,6 +474,8 @@ Lo que yo buscaba es ver si podía obtener ese dato a pesar de todas las trabas,
 [3]: https://www.broadband-forum.org/technical/download/TR-069.pdf
 
 [4]: https://genieacs.com/
+
+[5]: https://cwmp-data-models.broadband-forum.org/
 
 [app.py]: https://github.com/electronicayciencia/tr-069-proxy/blob/main/app.py
 
