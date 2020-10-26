@@ -6,23 +6,23 @@ import json
 import re
 
 app = Flask(__name__)
-logging.basicConfig(filename='app.log', level=logging.DEBUG)
+#logging.basicConfig(filename='app.log', level=logging.DEBUG)
+logging.basicConfig(level=logging.DEBUG)
 LOG = create_logger(app)
 
 
 local_domain = "0.0.0.0"
 local_port = 10301
 
+flow_diverted = 0
 remote_proto = 'http'
 remote_domain = 'acs.masmovil.com'
 remote_port = 10301  # 10302 for https
 
 
-ALL_METHODS = ["GET", "POST"]
-
-
-@app.route("/<path:path>", methods=ALL_METHODS)
+@app.route("/<path:path>", methods=["GET", "POST"])
 def hello(path):
+    global flow_diverted
 
     with open("report.txt", "a") as report:
         report.write("--- Request:\n")
@@ -41,14 +41,25 @@ def hello(path):
 
                 if name == "Host":
                     continue
+                else:
+                    call_headers[name] = value
 
-                call_headers[name] = value
+            # show_params(request.data.decode('utf-8'))
 
-            report.write(
-                "\n{}\n--- Response:\n".format(request.data.decode('utf-8')))
+            report.write("\n{}\n".format(request.data.decode('utf-8')))
 
-            show_params(request.data.decode('utf-8'))
+            # If request body is empty, divert the flow to inject
+            # our custom response.
+            if request.content_length == 0:
+                flow_diverted = 1
+                return harcoded_response()
 
+            # Abruptly end a diverted flow
+            if flow_diverted == 1:
+                LOG.warning("End of diverted flow.")
+                return make_response("Error", 500)
+
+            # Otherwise, send the request to ACS
             dest_path = "{}://{}:{}{}".format(remote_proto,
                                               remote_domain,
                                               remote_port,
@@ -65,18 +76,21 @@ def hello(path):
 
             # Process response
             LOG.info('Request forwarded.')
-            report.write("{}\n".format(response.status_code))
+            report.write("\n--- Response:\n{}\n".format(response.status_code))
 
-            # Forward to the caller
+            # Copy and write down headers
             response_headers = {}
             for header in response.headers:
                 value = response.headers.get(header)
                 response_headers[header] = value
                 report.write("{}: {}\n".format(header, value))
 
+            # Mangle response
             t = response.text
             t = alter_response(t)
-            show_params(t)
+            # show_params(t)
+
+            # Write down response and forward it
             report.write("\n{}\n\n".format(t))
 
             return make_response(
@@ -88,6 +102,14 @@ def hello(path):
             LOG.error("Exception: {}".format(e))
             report.write("Exception: {}\n".format(e))
             return make_response("Not found", 404)
+
+
+@app.route("/<path:path>", methods=["PUT"])
+def receivefile(path):
+    LOG.info("Getting file")
+    with open('uploaded_file', 'wb') as f:
+        f.write(request.stream.read())
+    return make_response("Ok", 200)
 
 
 def load_file(file):
@@ -123,6 +145,12 @@ def show_params(t):
 
     for n, v in re.findall("<Name>([^<]+).*?<Value[^>]*>([^<]+)", t, re.DOTALL):
         LOG.debug("{} {}: {}".format(d, n, v))
+
+
+def harcoded_response():
+    headers = {"Content-Type": "text/xml; charset=\"UTF-8\""}
+    text = load_file("uploadcommand2.xml")
+    return make_response(text, 200, headers)
 
 
 if __name__ == "__main__":

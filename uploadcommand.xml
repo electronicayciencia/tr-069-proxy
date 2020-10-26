@@ -1,0 +1,20 @@
+<soap:Envelope
+	xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"
+	xmlns:soap-enc="http://schemas.xmlsoap.org/soap/encoding/"
+	xmlns:cwmp="urn:dslforum-org:cwmp-1-0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<soap:Header>
+		<cwmp:ID soap:mustUnderstand="1">1111</cwmp:ID>
+	</soap:Header>
+	<soap:Body>
+		<cwmp:Upload>
+			<FileType>1 Vendor Configuration File</FileType>
+			<URL>http://192.168.1.121:10000/config</URL>
+			<Username>1234</Username>
+			<Password>1234</Password>
+			<DelaySeconds>0</DelaySeconds>
+			<CommandKey></CommandKey>
+		</cwmp:Upload>
+	</soap:Body>
+</soap:Envelope>

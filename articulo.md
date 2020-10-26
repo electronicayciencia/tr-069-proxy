@@ -61,14 +61,13 @@ Miramos los **puertos abiertos**. Quién sabe, tal vez la administración por te
 
 El **DNS** (53), la **web** de administración (80), la web por https (443), compartir ficheros (139 y 445), el **teléfono** (5060) y el **uPnP** (49153). Quizá alguno de los servicios tenga exploits conocidos. De momento nada de telnet. Vamos a seguir mirando.
 
-**Descarga de la configuración**. Probemos lo más fácil. Hago un backup de la configuración por si puedo ver la contraseña ahí directamente. O si no podría manipular el backup para activar el telnet o el SSH cuando lo cargue.
+**Descarga de la configuración**. Probemos lo más fácil. Hago un backup de la configuración por si puedo ver la contraseña ahí directamente. O tal vez podría manipular el backup en local, activar el telnet y cargarlo como si fuera el original.
 
 ![img-aead10](img/aead10.png)
 
-No es texto, es un fichero binario. Quizá comprimido, cifrado o las dos cosas. AEAD me recuerda a *authenticated encryption with associated data*, prefiero buscar otro camino.
+No es texto, es un fichero binario. Quizá comprimido, cifrado o las dos cosas. La cabecera AEAD me recuerda a *authenticated encryption with associated data*, prefiero buscar otro camino.
 
 Si no puedo obtener una shell por red, tal vez tenga que utilizar una conexión serie. Pero implicaría desmontar un router nuevo y manipular el hardware. Podría salir mal.
-
 
 ## El CWMP, más conocido por TR-069
 
