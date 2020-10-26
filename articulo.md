@@ -2,7 +2,7 @@
 
 Lo que te voy a contar **no es una vulnerabilidad**, ni tampoco un fallo de seguridad del operador. Las acciones descritas sólo afectan a tu propio router.
 
-Sin embargo, es un modo de acercarse a un problema y trazar un plan con las opciones disponibles para obtener el resultado deseado. Resultado que -es cierto- se aparta del diseño original del sistema.
+Puedes verlo como un modo de acercarse a un problema y trazar un plan con las opciones disponibles hasta obtener el resultado deseado. Resultado que, en efecto, se aparta del diseño original del sistema.
 
 Es, dicho de otra manera, un relato sobre **hacking**.
 
