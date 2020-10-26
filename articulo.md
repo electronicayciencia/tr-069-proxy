@@ -102,7 +102,7 @@ Una vez reiniciado y, por supuesto, desconectado de la red ya podemos entrar com
 
 ![opciones del cliente TR-069](img/TR_as_admin.png)
 
-La URL del ACS y el usuario se ven a simple vista. La contraseña no la necesitamos. La PLOAM Password no te la va a mostrar ni siquiera como admin.
+La URL del ACS y el usuario se ven a simple vista. La contraseña de acceso al ACS no la necesitamos ahora mismo. Y la PLOAM Password no te la va a mostrar ni siquiera como admin.
 
 En esa pantalla, aprovechamos para **desactivar** el cliente. Así no se cambiará la contraseña. Haremos también un backup de la configuración. Así cuando queramos recuperar el usuario administrador más adelante ya no necesitamos reiniciar a valores de fábrica, será suficiente cargar esta configuración.
 
@@ -352,7 +352,7 @@ Me conecto utilizando la conexión wifi compartida del móvil y... ¡sí! El 22 
 
 Sin embargo algo no le gusta. Me ha abierto los puertos, pero a continuación **me echa**. ¿El firewall? Probablemente. Sigamos buscando.
 
-Justo debajo de los parámetros anteriores encontramos una pista para seguir:
+Justo debajo de los parámetros anteriores encontramos la siguiente pista:
 
 ```xml
 <ParameterValueStruct>
