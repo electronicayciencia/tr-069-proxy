@@ -50,14 +50,14 @@ def hello(path):
 
             # If request body is empty, divert the flow to inject
             # our custom response.
-            if request.content_length == 0:
-                flow_diverted = 1
-                return harcoded_response()
+            # if request.content_length == 0:
+            #    flow_diverted = 1
+            #    return harcoded_response()
 
-            # Abruptly end a diverted flow
-            if flow_diverted == 1:
-                LOG.warning("End of diverted flow.")
-                return make_response("Error", 500)
+            # Abruptly end a diverted flow (needed to free tr69d session)
+            # if flow_diverted == 1:
+            #    LOG.warning("End of diverted flow.")
+            #    return make_response("Error", 500)
 
             # Otherwise, send the request to ACS
             dest_path = "{}://{}:{}{}".format(remote_proto,

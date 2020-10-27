@@ -9,7 +9,7 @@
 	</soap:Header>
 	<soap:Body>
 		<cwmp:Upload>
-			<FileType>3 Vendor Configuration File 2</FileType>
+			<FileType>3 Vendor Configuration File 1</FileType>
 			<URL>http://192.168.1.237:10301/config</URL>
 			<Username>1234</Username>
 			<Password>1234</Password>
