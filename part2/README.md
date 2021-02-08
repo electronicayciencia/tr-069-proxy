@@ -7,10 +7,12 @@ and
 
 ## Usage
 
+Python2 needed.
+
 To decrypt:
 
     python gsdf.py d < device.cfg | gunzip > device.xml
 
 To encrypt:
 
-    gzip device.xml | python gsdf.py e > device.cfg
+    gzip -nc device.xml | python gsdf.py e > device.cfg
