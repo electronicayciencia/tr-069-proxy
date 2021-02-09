@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+# From:
+# https://web.archive.org/web/20180129221212/https://noconroy.net/sagemcom-fast5355-re-p3.html
+
 from Crypto.Cipher import AES
 from Crypto.Hash import SHA256
 from Crypto.Util import Counter
@@ -19,8 +22,8 @@ def int_to_hex(i, l):
     return "\x00" * (l - len(s)) + s
 
 
-key = "\x7d\xa2\x58\x13\xdd\x9d\x7a\x15\x3e\x60\xa0\x28\xba\xdd\xb2\x88"
-key += "\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+key = b"\x7d\xa2\x58\x13\xdd\x9d\x7a\x15\x3e\x60\xa0\x28\xba\xdd\xb2\x88"
+key += b"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
 
 # Decryption routine - does no verification of input data.
 # Be careful!
@@ -80,7 +83,7 @@ def encrypt(data, tag):
 def main():
     msg = "Usage: %s e|d < file.in > file.out\n\te) Encryption\n\td) Decryption" % sys.argv[0]
     if len(sys.argv) == 1:
-        print msg
+        print(msg)
         return
 
     tag = "default"
@@ -91,7 +94,7 @@ def main():
     elif mode == 'd' or mode == 'decrypt':
         sys.stdout.write(decrypt(sys.stdin.read()))
     else:
-        print msg
+        print(msg)
 
 
 if __name__ == "__main__":

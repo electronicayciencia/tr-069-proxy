@@ -3,11 +3,13 @@
 Based on NoConroy's posts
 [Sagemcom F@ST5355 Reverse Engineering - Part 2](https://web.archive.org/web/20180129221204/https://noconroy.net/sagemcom-fast5355-re-p2.html)
 and
-[Sagemcom F@ST5355 Reverse Engineering - Part 3](https://web.archive.org/web/20180129221204/https://noconroy.net/sagemcom-fast5355-re-p2.html).
+[Sagemcom F@ST5355 Reverse Engineering - Part 3](https://web.archive.org/web/20180129221204/https://noconroy.net/sagemcom-fast5355-re-p3.html).
 
 ## Usage
 
-Python2 needed.
+Python3 needed.
+
+    pip install pycryptodome
 
 To decrypt:
 
