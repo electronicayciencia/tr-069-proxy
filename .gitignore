@@ -7,3 +7,6 @@ app.log
 test_response.xml
 log_sesion_router.txt
 configured_params.log
+part2/*.cfg
+part2/*.xml
+part2/__pycache__/**
