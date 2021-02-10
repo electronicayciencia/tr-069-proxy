@@ -10,3 +10,4 @@ configured_params.log
 part2/*.cfg
 part2/*.xml
 part2/__pycache__/**
+part2/build/**
