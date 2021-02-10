@@ -19,7 +19,7 @@ def int_to_hex(i, l):
     if len(h) % 2 != 0:
         h = "0" + h
     s = unhexlify(h)
-    return "\x00" * (l - len(s)) + s
+    return b"\x00" * (l - len(s)) + s
 
 
 key = b"\x7d\xa2\x58\x13\xdd\x9d\x7a\x15\x3e\x60\xa0\x28\xba\xdd\xb2\x88"
