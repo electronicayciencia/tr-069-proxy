@@ -1,6 +1,8 @@
 # Sagemcom F@ST 5657 configuration decryptor
 
+For precompiled binaries go to [Releases](https://github.com/electronicayciencia/tr-069-proxy/releases/tag/v1.0). And follow instructions.
 
+To know **technical details** refer to (Spanish): [Descifrando la configuración del Sagemcom F@ST 5657](https://www.electronicayciencia.com/2021/02/descifrar-configuracion-sagemcom-fast5657.html)
 
 ## Prerequisites
 
@@ -14,7 +16,7 @@ If you are using Windows, your Crypto library may be not recognized until you re
 
 Or you may prefer to use compiled binary from `dist` directory.
 
-## Showconfig usage
+## Showconfig
 
 Decrypts Sagemcom F@ST 5657 configuration file and display relevant fields.
 
@@ -23,13 +25,15 @@ Decrypts Sagemcom F@ST 5657 configuration file and display relevant fields.
 - infile: Encrypted configuration file like `device.cfg`
 - outfile: Output XML file if you want to save it.
 
-The file `showconfig.json` must be in the same directory.
+The file `showconfig.json` must be in the same directory. You can change XPath to show important fields.
+
+## xml2cfg
+
+Re-compress and re-encrypt input XML into a valid configuration file.
 
 ## gsdf usage
 
-This is a raw encrypt/decrypt routine I copied from NoConroy's posts
-[Sagemcom F@ST5355 Reverse Engineering - Part 2](https://web.archive.org/web/20180129221204/https://noconroy.net/sagemcom-fast5355-re-p2.html)
-and
+This is a **raw** encrypt/decrypt routine I copied from NoConroy's post
 [Sagemcom F@ST5355 Reverse Engineering - Part 3](https://web.archive.org/web/20180129221204/https://noconroy.net/sagemcom-fast5355-re-p3.html).
 
 The only changes I made are:
@@ -44,7 +48,6 @@ To decrypt:
 To encrypt:
 
     gzip -nc device.xml | python gsdf.py e > device.cfg
-
 
 ## Create windows executable
 
