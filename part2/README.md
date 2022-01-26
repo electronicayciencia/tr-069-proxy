@@ -1,3 +1,9 @@
+```
+
+Note: this script does not work on updated firmwares.
+
+```
+
 # Sagemcom F@ST 5657 configuration decryptor
 
 For precompiled binaries go to [Releases](https://github.com/electronicayciencia/tr-069-proxy/releases/tag/v1.0). And follow instructions.
